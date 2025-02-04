@@ -1,20 +1,19 @@
-import { Text, View, StyleSheet } from 'react-native';
-import { multiply } from 'react-native-upi-intent';
-
-const result = multiply(3, 7);
+import { addJsBridge } from 'react-native-js-bridge';
+import { findNodeHandle } from 'react-native';
+import { WebView } from 'react-native-webview';
 
 export default function App() {
+  const checkandAddJsBridge = (tag: number) => {
+    const nativeTag = findNodeHandle(tag);
+    if (nativeTag) addJsBridge(nativeTag);
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Result: {result}</Text>
-    </View>
+    <WebView
+      source={{ uri: 'https://discoverpilgrim.com/' }}
+      onLoad={({ nativeEvent }) => {
+        checkandAddJsBridge(nativeEvent?.target);
+      }}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

@@ -1,22 +1,27 @@
-# react-native-upi-intent
+# react-native-js-bridge
 
-Get the list of installed UPI apps 
+Get the webview nativeid or tag and pass to addJsBridge. It will add JS bridge on webview object create by `react-native-webview`
 
 ## Installation
 
 ```sh
-npm install react-native-upi-intent
+npm install react-native-js-bridge
+
+yarn add react-native-js-bridge
 ```
 
 ## Usage
 
 
 ```js
-import { multiply } from 'react-native-upi-intent';
+import { addJsBridge } from 'react-native-js-bridge';
 
 // ...
 
-const result = multiply(3, 7);
+const checkandAddJsBridge = (tag: number) => {
+    const nativeTag = findNodeHandle(tag);
+    if (nativeTag) addJsBridge(nativeTag);
+};
 ```
 
 

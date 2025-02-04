@@ -1,10 +1,11 @@
 {
-  "name": "react-native-upi-intent",
-  "version": "0.1.0",
-  "description": "Get the list of installed UPI apps ",
+  "name": "react-native-js-bridge",
+  "version": "0.0.1",
+  "description": "Provide support for adding Javscript bridge in react-native-webview",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
   "module": "./lib/module/index.js",
+  "types": "./lib/typescript/module/src/index.d.ts",
   "exports": {
     ".": {
       "import": {
@@ -48,7 +49,11 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "upi",
+    "webviews",
+    "psp",
+    "payments"
   ],
   "repository": {
     "type": "git",
@@ -82,8 +87,7 @@
     "react-native": "0.77.0",
     "react-native-builder-bob": "^0.36.0",
     "release-it": "^17.10.0",
-    "turbo": "^1.10.7",
-    "typescript": "^5.2.2"
+    "turbo": "^1.10.7"
   },
   "resolutions": {
     "@types/react": "^18.2.44"

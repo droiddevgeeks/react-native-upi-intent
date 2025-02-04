@@ -9,7 +9,7 @@ import java.util.HashMap
 
 class JsBridgePackage : BaseReactPackage() {
   override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? {
-    return if (name == JsBridgeModule.NAME) {
+    return if (name == JsBridgeModuleImpl.NAME) {
       JsBridgeModule(reactContext)
     } else {
       null
@@ -18,14 +18,15 @@ class JsBridgePackage : BaseReactPackage() {
 
   override fun getReactModuleInfoProvider(): ReactModuleInfoProvider {
     return ReactModuleInfoProvider {
+      val isTurboModule = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED
       val moduleInfos: MutableMap<String, ReactModuleInfo> = HashMap()
-      moduleInfos[JsBridgeModule.NAME] = ReactModuleInfo(
-        JsBridgeModule.NAME,
-        JsBridgeModule.NAME,
+      moduleInfos[JsBridgeModuleImpl.NAME] = ReactModuleInfo(
+        JsBridgeModuleImpl.NAME,
+        JsBridgeModuleImpl.NAME,
         false,  // canOverrideExistingModule
         false,  // needsEagerInit
         false,  // isCxxModule
-        true // isTurboModule
+        isTurboModule // isTurboModule
       )
       moduleInfos
     }

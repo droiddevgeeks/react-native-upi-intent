@@ -1,5 +1,5 @@
 buildscript {
-  ext.getExtOrDefault = {name ->
+  ext.getExtOrDefault = { name ->
     return rootProject.ext.has(name) ? rootProject.ext.get(name) : project.properties['JsBridge_' + name]
   }
 
@@ -9,7 +9,7 @@ buildscript {
   }
 
   dependencies {
-    classpath "com.android.tools.build:gradle:8.7.2"
+    classpath "com.android.tools.build:gradle:8.7.3"
     // noinspection DifferentKotlinGradleVersion
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${getExtOrDefault('kotlinVersion')}"
   }
@@ -82,10 +82,13 @@ android {
   sourceSets {
     main {
       if (isNewArchitectureEnabled()) {
-          java.srcDirs += [
-            "generated/java",
-            "generated/jni"
-          ]
+        java.srcDirs += [
+          "generated/java",
+          "generated/jni",
+          "src/newarch"
+        ]
+      } else {
+        java.srcDirs += ['src/oldarch',"generated/java"]
       }
     }
   }
