@@ -1,6 +1,6 @@
 {
   "name": "react-native-js-bridge",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Provide support for adding Javscript bridge in react-native-webview",
   "source": "./src/index.tsx",
   "main": "./lib/commonjs/index.js",
