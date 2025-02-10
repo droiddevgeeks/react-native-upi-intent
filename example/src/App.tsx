@@ -1,5 +1,5 @@
 import { addJsBridge } from 'react-native-js-bridge';
-import { findNodeHandle } from 'react-native';
+import { findNodeHandle, Platform } from 'react-native';
 import { WebView } from 'react-native-webview';
 
 export default function App() {
@@ -10,9 +10,16 @@ export default function App() {
 
   return (
     <WebView
-      source={{ uri: 'https://discoverpilgrim.com/' }}
-      onLoad={({ nativeEvent }) => {
-        checkandAddJsBridge(nativeEvent?.target);
+      source={{ uri: 'https://botanikatea.com/' }}
+      onLoadStart={({ nativeEvent }) => {
+        if (
+          nativeEvent.url &&
+          nativeEvent.url.includes('api.cashfree.com') &&
+          Platform.OS === 'android'
+        ) {
+          console.log('onLoadStart', nativeEvent.url);
+          checkandAddJsBridge(nativeEvent?.target);
+        }
       }}
     />
   );

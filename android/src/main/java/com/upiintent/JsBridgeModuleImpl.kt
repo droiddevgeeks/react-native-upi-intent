@@ -25,40 +25,34 @@ class JsBridgeModuleImpl(private val reactContext: ReactContext) :
     reactContext.addLifecycleEventListener(this)
   }
 
-  private var isJsAdded: Boolean = false
+  private val myPluginScope: CoroutineScope by lazy {
+    CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+  }
+
+  private val uiManager by lazy {
+    if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
+      UIManagerHelper.getUIManager(reactContext, UIManagerType.FABRIC)
+    } else {
+      reactContext.getNativeModule(UIManagerModule::class.java)
+    }
+  }
+
   private var webView: WebView? = null
 
   fun addJsBridge(reactTag: Double) {
-    if (isJsAdded) return
-    val uiManager =
-      if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
-        UIManagerHelper.getUIManager(reactContext, UIManagerType.FABRIC)
-      } else {
-        reactContext.getNativeModule(UIManagerModule::class.java)
-      }
-
     uiManager?.let { manager ->
       val id = reactTag.toInt()
-      val myPluginScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
       myPluginScope.launch {
         manager.resolveView(id)?.let { resolvedView ->
           if (resolvedView is FrameLayout) {
             val rnWebView = resolvedView.getChildAt(0)
-            if (rnWebView != null && rnWebView is WebView && isJsAdded.not()) {
+            if (rnWebView != null && rnWebView is WebView) {
               webView = rnWebView
-              webView?.addJavascriptInterface(
-                CheckoutJsBridge(reactContext),
-                CHECKOUT_BRIDGE_NAME
-              )
-              isJsAdded = true
+              checkAndAddJSBridge()
             }
-          } else if (resolvedView is WebView && isJsAdded.not()) {
+          } else if (resolvedView is WebView) {
             webView = resolvedView
-            webView?.addJavascriptInterface(
-              CheckoutJsBridge(reactContext),
-              CHECKOUT_BRIDGE_NAME
-            )
-            isJsAdded = true
+            checkAndAddJSBridge()
           }
         } ?: run {
           Log.d(TAG, "Unable to find view")
@@ -91,7 +85,16 @@ class JsBridgeModuleImpl(private val reactContext: ReactContext) :
     reactContext.removeActivityEventListener(this)
     reactContext.removeLifecycleEventListener(this)
     webView = null
-    isJsAdded = false
+  }
+
+  private fun checkAndAddJSBridge() {
+    webView?.let {
+      webView?.evaluateJavascript("typeof window.$CHECKOUT_BRIDGE_NAME === 'undefined'") { result ->
+        if (result == "true") {
+          webView?.addJavascriptInterface(CheckoutJsBridge(reactContext), CHECKOUT_BRIDGE_NAME)
+        }
+      }
+    }
   }
 
   companion object {
